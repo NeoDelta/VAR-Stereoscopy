@@ -24,7 +24,9 @@ var CAVE = {
             [ "EyeL", [this.leftEye.x, this.leftEye.y, this.leftEye.z], [2.0, 2.0, 2.0] ], // Left eye
             [ "EyeR", [this.rightEye.x, this.rightEye.y, this.rightEye.z], [2.0, 2.0, 2.0] ], // Right eye
 			[ "Plane", [   0.0,    0.0, -150.0], [300.0, 300.0, 1.0] ], // Front plane
-            [ "Plane", [   0.0,    0.0, -150.0], [300.0, 300.0, 1.0] , [90,0]],
+            [ "Plane", [   -150.0,  0.0,   0.0], [300.0, 300.0, 1.0] , [90,0] ], // Left plane
+            [ "Plane", [   150.0,   0.0,   0.0], [300.0, 300.0, 1.0] , [90,0] ], // Right plane
+            [ "Plane", [   0.0,   -150.0,  0.0], [300.0, 300.0, 1.0] , [0,-90] ], // Floor plane
         ];
         this.objects = [];
         for (var i = 0; i < objs.length; ++i){
@@ -40,6 +42,9 @@ var CAVE = {
         
         // Init textures for each display surface
         GLV.TextureManager.createTexture("front", this.TEX_SIZE, this.TEX_SIZE, true);
+        GLV.TextureManager.createTexture("left", this.TEX_SIZE, this.TEX_SIZE, true);
+        GLV.TextureManager.createTexture("right", this.TEX_SIZE, this.TEX_SIZE, true);
+        GLV.TextureManager.createTexture("floor", this.TEX_SIZE, this.TEX_SIZE, true);
 
         // Init keyboard callbacks
         var checkMoveScene = function(){ return GLV.uiSelectedMoveMode === GLV.MOVEMODE_SCENE; };
@@ -151,6 +156,9 @@ var CAVE = {
         
         gl.uniform1i(gl.getUniformLocation(shaderProg, "texIdx"), 0);
         this.objects[2].draw(GLV.camera.mvMat, GLV.camera.pMat);
+        this.objects[3].draw(GLV.camera.mvMat, GLV.camera.pMat);
+        this.objects[4].draw(GLV.camera.mvMat, GLV.camera.pMat);
+        this.objects[5].draw(GLV.camera.mvMat, GLV.camera.pMat);
         
     }
 };
