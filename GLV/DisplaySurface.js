@@ -36,9 +36,52 @@ DisplaySurface.prototype.viewingMatrix = function(eye){
 	return mat;
 };
 
+
+
+DisplaySurface.prototype.zNearProjection = function(zNear, L, D){
+	return zNear*L/D;
+
+}
+
 DisplaySurface.prototype.projectionMatrix = function(eye, znear, zfar){
     var mat = new Mat4();
 	mat.loadIdentity();
-	// ...
+
+
+
+	//normal to the display
+	var normal = Vec3.cross(this.u,this.v);
+
+
+
+	var topRightCorner = Vec3.add(Vec3.add(this.origin,this.u),this.v);
+
+
+	//bottom left corner vector
+	var bottomLeftVector = Vec3.subtract(this.origin,eye);
+	var topRightVector = Vec3.subtract(topRightCorner,eye);
+
+
+
+	var L = this.u.copy();
+	L = L.negate();
+	L = L.project(bottomLeftVector).norm();
+	L = -L;
+	var B = this.v.copy();
+	B = B.negate();
+	B = B.project(bottomLeftVector).norm();
+	B = -B;
+	var R = this.u.copy();
+	R = R.project(topRightVector).norm();
+	var T = this.v.copy();
+	T = T.project(topRightVector).norm();
+	var D = normal.copy();
+	D = (D.negate().project(bottomLeftVector)).norm();
+
+	var l = this.zNearProjection(znear,L,D);
+	var b = this.zNearProjection(znear,B,D);
+	var r = this.zNearProjection(znear,R,D);
+	var t = this.zNearProjection(znear,T,D);
+	mat.frustum(l,r,b,t,znear,zfar);
 	return mat;
 };

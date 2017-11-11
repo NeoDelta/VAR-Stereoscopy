@@ -112,7 +112,10 @@ var CAVE = {
 	drawSceneOntoTexture : function(displaySurface, fboName){
 		
 		GLV.TextureManager.bindFBO(fboName);
-		GLV.scene.draw(GLV.camera.mvMat.copy(), GLV.camera.pMat.copy());
+        var proj = displaySurface.projectionMatrix(this.leftEye,0.1,100);
+        var view = displaySurface.viewingMatrix(this.leftEye,0.1,100);
+		//GLV.scene.draw(GLV.camera.mvMat.copy(), GLV.camera.pMat.copy());
+        GLV.scene.draw(view.copy(), proj.copy());
 		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 	},
     
@@ -120,7 +123,7 @@ var CAVE = {
 
         // Adjust the viewport to the textures
         gl.viewport(0, 0, this.TEX_SIZE, this.TEX_SIZE);
-        
+        /*
         console.log("floor");
         this.floor.viewingMatrix(this.rightEye);
         console.log("Front");
@@ -129,11 +132,13 @@ var CAVE = {
         this.left.viewingMatrix(this.rightEye);
         console.log("Right");
         this.right.viewingMatrix(this.rightEye);
-        
+        */
 
         // For each DisplaySurface, draw scene onto a texture
         this.drawSceneOntoTexture(this.front, "front");
         this.drawSceneOntoTexture(this.left, "left");
+        this.drawSceneOntoTexture(this.right, "right");
+        this.drawSceneOntoTexture(this.floor, "floor");
 
         // Restore the gl context
         gl.viewport(0, 0, GLV.canvas.width, GLV.canvas.height);
