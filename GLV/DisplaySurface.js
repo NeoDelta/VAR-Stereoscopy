@@ -13,8 +13,9 @@ DisplaySurface.prototype.viewingMatrix = function(eye){
 	var mat = new Mat4();
     mat.loadIdentity();
 	// ....
+	//var eye = new Vec3(50, 20, 100);
 
-	var x2 = new Vec3(this.origin.x, this.origin.y, this.origin.z);
+	/*var x2 = new Vec3(this.origin.x, this.origin.y, this.origin.z);
 	x2.add(this.u);
 	var x3 = new Vec3(this.origin.x, this.origin.y, this.origin.z);
 	x3.add(this.v);
@@ -27,12 +28,23 @@ DisplaySurface.prototype.viewingMatrix = function(eye){
 
 	var dist = Vec3.dot(Vec3.subtract(eye, this.origin), normal);
 	var displayCenter = Vec3.subtract(eye, normal.mult(dist));
+	*/
 
-	mat.lookAt(eye, displayCenter, new Vec3(0,0,1));
-
-	console.log(dist);
-	console.log(mat);
-
+	var n = Vec3.cross(this.u,this.v).normalize();
+	var vrp = Vec3.subtract(eye,n); 
+	mat.lookAt(eye, vrp/*displayCenter*/, new Vec3(0,1,0));
+	/*
+	//console.log(dist);
+	//console.log(mat);
+	console.log("viewing",this.origin.x,this.origin.y,this.origin.z);
+	console.log("eye",eye.x,eye.y,eye.z);
+	console.log(n.x,n.y,n.z);
+	console.log(vrp.x,vrp.y,vrp.z);
+	for(var i = 0; i < 4; ++i){
+		console.log(mat._[i],mat._[i+4],mat._[i+8],mat._[i+12]);
+		console.log(" ");
+	}
+	*/
 	return mat;
 };
 
@@ -47,6 +59,10 @@ DisplaySurface.prototype.projectionMatrix = function(eye, znear, zfar){
     var mat = new Mat4();
 	mat.loadIdentity();
 
+
+	//var eye = new Vec3(50, 20, 100);
+	//var znear = 0.1;
+	//var zfar = 100;
 
 
 	//normal to the display
@@ -83,5 +99,15 @@ DisplaySurface.prototype.projectionMatrix = function(eye, znear, zfar){
 	var r = this.zNearProjection(znear,R,D);
 	var t = this.zNearProjection(znear,T,D);
 	mat.frustum(l,r,b,t,znear,zfar);
+
+
+	/*console.log("proj",this.origin.x,this.origin.y,this.origin.z);
+	console.log(l,r,b,t,znear,zfar);
+	for(var i = 0; i < 4; ++i){
+		console.log(mat._[i],mat._[i+4],mat._[i+8],mat._[i+12]);
+		console.log(" ");
+	}*/
+
+
 	return mat;
 };
