@@ -109,14 +109,15 @@ var CAVE = {
         this.objects[1].pos.x += dist/2;
     },
 	
-	drawSceneOntoTexture : function(displaySurface, fboName){
+	drawSceneOntoTexture : function(displaySurface, fboName,eye){
 		
 		GLV.TextureManager.bindFBO(fboName);
-        var proj = displaySurface.projectionMatrix(this.leftEye,0.1,100);
-        var view = displaySurface.viewingMatrix(this.leftEye,0.1,100);
+        var proj = displaySurface.projectionMatrix(eye,0.1,100);
+        var view = displaySurface.viewingMatrix(eye,0.1,100);
 		//GLV.scene.draw(GLV.camera.mvMat.copy(), GLV.camera.pMat.copy());
         GLV.scene.draw(view.copy(), proj.copy());
 		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+        
 	},
     
     draw : function(){
@@ -135,10 +136,18 @@ var CAVE = {
         */
 
         // For each DisplaySurface, draw scene onto a texture
-        this.drawSceneOntoTexture(this.front, "front");
-        this.drawSceneOntoTexture(this.left, "left");
-        this.drawSceneOntoTexture(this.right, "right");
-        this.drawSceneOntoTexture(this.floor, "floor");
+        gl.colorMask(true,false,false,true);
+        this.drawSceneOntoTexture(this.front, "front",this.leftEye);
+        this.drawSceneOntoTexture(this.left, "left",this.leftEye);
+        this.drawSceneOntoTexture(this.right, "right",this.leftEye);
+        this.drawSceneOntoTexture(this.floor, "floor",this.leftEye);
+        gl.colorMask(false,false,true,true);
+        this.drawSceneOntoTexture(this.front, "front",this.rightEye);
+        this.drawSceneOntoTexture(this.left, "left",this.rightEye);
+        this.drawSceneOntoTexture(this.right, "right",this.rightEye);
+        this.drawSceneOntoTexture(this.floor, "floor",this.rightEye);
+        gl.colorMask(true,true,true,true);
+        
 
         // Restore the gl context
         gl.viewport(0, 0, GLV.canvas.width, GLV.canvas.height);
@@ -159,11 +168,16 @@ var CAVE = {
         // Set DisplaySurfaces textures
         GLV.TextureManager.setUniformTexArray(["front", "left", "right", "floor"], shaderProg, "textures");
         
+        
+
+
         gl.uniform1i(gl.getUniformLocation(shaderProg, "texIdx"), 0);
         this.objects[2].draw(GLV.camera.mvMat, GLV.camera.pMat);
         this.objects[3].draw(GLV.camera.mvMat, GLV.camera.pMat);
         this.objects[4].draw(GLV.camera.mvMat, GLV.camera.pMat);
         this.objects[5].draw(GLV.camera.mvMat, GLV.camera.pMat);
+
+
         
     }
 };
