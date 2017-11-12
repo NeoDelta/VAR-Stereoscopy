@@ -25,7 +25,7 @@ var CAVE = {
             [ "EyeR", [this.rightEye.x, this.rightEye.y, this.rightEye.z], [2.0, 2.0, 2.0] ], // Right eye
 			[ "Plane", [   0.0,    0.0, -150.0], [300.0, 300.0, 1.0] ], // Front plane
             [ "Plane", [   -150.0,  0.0,   0.0], [300.0, 300.0, 1.0] , [90,0] ], // Left plane
-            [ "Plane", [   150.0,   0.0,   0.0], [300.0, 300.0, 1.0] , [90,0] ], // Right plane
+            [ "Plane", [   150.0,   0.0,   0.0], [300.0, 300.0, 1.0] , [-90,0] ], // Right plane
             [ "Plane", [   0.0,   -150.0,  0.0], [300.0, 300.0, 1.0] , [0,-90] ], // Floor plane
         ];
         this.objects = [];
@@ -173,8 +173,11 @@ var CAVE = {
 
         gl.uniform1i(gl.getUniformLocation(shaderProg, "texIdx"), 0);
         this.objects[2].draw(GLV.camera.mvMat, GLV.camera.pMat);
+        gl.uniform1i(gl.getUniformLocation(shaderProg, "texIdx"), 1);
         this.objects[3].draw(GLV.camera.mvMat, GLV.camera.pMat);
+        gl.uniform1i(gl.getUniformLocation(shaderProg, "texIdx"), 2);
         this.objects[4].draw(GLV.camera.mvMat, GLV.camera.pMat);
+        gl.uniform1i(gl.getUniformLocation(shaderProg, "texIdx"), 3);
         this.objects[5].draw(GLV.camera.mvMat, GLV.camera.pMat);
 
 
